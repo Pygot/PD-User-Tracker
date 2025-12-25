@@ -1,5 +1,7 @@
 # PD-User-Tracker
-Stream PLS DONATE and donate your chat with ease!
+_Stream PLS DONATE and donate your chat with ease!_
+
+## Dependencies
 
 ```
 dependencies = [
@@ -7,3 +9,9 @@ dependencies = [
     "tkinterweb (>=4.11.0,<5.0.0)",
 ]
 ```
+
+## How it looks:
+
+| Preview 1 | Preview 2 |
+|----------|----------|
+| <img src="./preview1.png" width="400"> | <img src="./preview2.png" width="400"> |
