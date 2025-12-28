@@ -9,6 +9,7 @@ from tkinter import ttk, messagebox
 
 import threading, json, os, time, urllib.request, re, socket, queue
 import tkinter as tk
+import pytchat
 
 ###
 
@@ -81,7 +82,9 @@ class TwitchClient:
                     if "PRIVMSG" in line:
                         parts = line.split(":", 2)
                         if len(parts) > 2:
-                            msgs.append(parts[2].strip())
+                            user = line.split("!", 1)[0][1:]
+                            message = parts[2].strip()
+                            msgs.append((user, message))
             return msgs
         except:
             return []
@@ -393,8 +396,6 @@ class App:
             plat = self.cfg.get("platform", "YouTube")
 
             if plat == "YouTube":
-                import pytchat
-
                 self.listener = pytchat.create(video_id=target)
             else:
                 self.listener = TwitchClient(target)
@@ -456,7 +457,7 @@ class App:
                     if self.listener.is_alive():
                         data = self.listener.get()
                         if data:
-                            raw_msgs = [str(i.message) for i in data.items]
+                            raw_msgs = [(i.author.name, str(i.message)) for i in data.items]
                     else:
                         raise Exception("Connection Lost")
 
@@ -465,11 +466,14 @@ class App:
 
                 blacklist = [x.lower() for x in self.cfg.get("blacklist", [])]
 
-                for msg in raw_msgs:
+                for user, msg in raw_msgs:
                     clean_msg = re.sub(r":[a-zA-Z0-9_-]+:", "", msg).strip()
                     if not clean_msg:
                         continue
-                    self.r.after(0, lambda t=clean_msg: self.add_line(t, "normal"))
+                    self.r.after(
+                        0,
+                        lambda u=user, t=clean_msg: self.add_line(f"{u}: {t}", "normal")
+                    )
 
                     m = clean_msg.replace(" ", "").lower()
                     if m.startswith(p):
