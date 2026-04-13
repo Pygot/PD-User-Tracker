@@ -729,7 +729,7 @@ class App:
         try:
             data = json.dumps({"usernames": [u], "excludeBannedUsers": True}).encode()
             req = urllib.request.Request(
-                "https://users.roproxy.com/v1/usernames/users",
+                "https://users.roblox.com/v1/usernames/users",
                 data=data,
                 headers={"Content-Type": "application/json"},
             )
